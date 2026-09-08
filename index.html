@@ -231,84 +231,145 @@ section{margin-top:30px}
   <section><div class="head"><h2>KPI</h2><span class="sub">ゴールに効く先行指標</span></div>
     <div class="tbl" id="kpis"></div></section>
 
-  <section><div class="head"><h2>TASKS</h2><span class="sub">期限切れは赤、３日以内はオレンジ</span></div>
-    <div class="tbl" id="tasks"></div></section>
+  <section>
+    <div class="head"><h2>TASKS</h2><span class="sub">状態を押すと 未着手 → 進行中 → 完了 → 保留</span>
+      <span class="act" style="display:flex;gap:8px;align-items:center">
+        <label style="font-size:11.5px;color:var(--ink-2)">自分は <select id="meSel" style="font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)"></select></label>
+        <button class="btn" id="reload">↻ 更新</button>
+        <button class="btn pri" id="addBtn">＋ タスクを追加</button>
+      </span></div>
+    <div id="addForm" style="display:none;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px">
+      <input id="aTitle" type="text" placeholder="タスク名" style="font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)" >
+      <select id="aGroup" style="font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)"></select>
+      <select id="aOwner" style="font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)"></select>
+      <input id="aDue" type="date" style="font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)">
+      <button class="btn pri" id="aSave">追加</button>
+    </div>
+    <p class="mono" id="tstate" style="margin:0 0 8px;font-size:11px;color:var(--ink-3)"></p>
+    <div class="tbl" id="tasks"></div>
+  </section>
 
-  <p class="foot" id="foot"></p>
+  <p class="foot" id="foot">タスクの状態と追加はこのページから直接できます。保存先は Google スプレッドシートの TASKS シートで、全員に反映されます。KGI・KPI の数値は 2026-09-08 時点のスナップショットです。／ このページは検索除外（noindex）設定です。</p>
 </div>
 
 <script id="snap" type="application/json">{"kgi":[{"actual":"0","label":"VOL.03 当日の来場者数","note":"招待制の想定キャパから逆算","order":10,"target":"80","unit":"名","id":"g1"},{"actual":"0","label":"参加者満足度（事後アンケート平均）","note":"当日配布のフォームで回収","order":20,"target":"4.5","unit":"/ 5.0","id":"g2"},{"actual":"0","label":"VOL.04 に参加したい と答えた割合","note":"次回につながるかの本丸","order":30,"target":"80","unit":"%","id":"g3"}],"kpi":[{"actual":"0","label":"申込フォーム送信数（shokei.me/buzzbase/entry.html）","order":10,"owner":"新見康樹","target":"120","id":"k1"},{"actual":"0","label":"招待DM・声かけの送付数","order":20,"owner":"小西将理","target":"200","id":"k2"},{"actual":"0","label":"出席確定数（リマインドに返信あり）","order":30,"owner":"岩田紹吾","target":"100","id":"k3"},{"actual":"0","label":"Instagram @buzzbase.05.22 フォロワー増","order":40,"owner":"小西将理","target":"500","id":"k4"},{"actual":"0","label":"LINE公式 BUZZ BASE 友だち数","order":50,"owner":"乾颯汰","target":"300","id":"k5"},{"actual":"0","label":"LINE公式 BUZZ Student 友だち数","order":60,"owner":"乾颯汰","target":"200","id":"k6"},{"actual":"3","label":"掲載パートナー・協賛社数","order":70,"owner":"半谷一太","target":"5","id":"k7"},{"actual":"0","label":"ティザー映像の再生数","order":80,"owner":"達城椋","target":"3000","id":"k8"},{"actual":"0","label":"事後アンケート回答率","order":90,"owner":"新見康樹","target":"60","id":"k9"}],"task":[{"due":"2026-09-12","group":"制作","order":10,"owner":"新見康樹","status":"doing","title":"告知サイトの本文・クルー欄を最終確定","id":"t01"},{"due":"2026-09-10","group":"集客","order":10,"owner":"小西将理","status":"todo","title":"招待リストの確定（誰に何人送るか）","id":"t11"},{"due":"2026-09-18","group":"当日運営","order":10,"owner":"半谷一太","status":"todo","title":"7CLOVER Shibuya と当日タイムテーブルの詰め","id":"t21"},{"due":"2026-09-26","group":"事後","order":10,"owner":"新見康樹","status":"todo","title":"事後アンケートの配信","id":"t31"},{"due":"2026-09-12","group":"制作","order":20,"owner":"新見康樹","status":"todo","title":"申込フォーム（entry.html）の動作確認","id":"t02"},{"due":"2026-09-11","group":"集客","order":20,"owner":"小西将理","status":"todo","title":"Instagram 告知投稿 第1弾","id":"t12"},{"due":"2026-09-22","group":"当日運営","order":20,"owner":"乾颯汰","status":"todo","title":"封筒ミッションの中身を用意・印刷","id":"t22"},{"due":"2026-09-30","group":"事後","order":20,"owner":"達城椋","status":"todo","title":"写真・映像の掲載同意を突き合わせてから公開","id":"t32"},{"due":"2026-09-15","group":"制作","order":30,"owner":"達城椋","status":"todo","title":"ティザー映像の完成・#/thanks への組み込み","id":"t03"},{"due":"2026-09-13","group":"集客","order":30,"owner":"乾颯汰","status":"todo","title":"LINE公式 2アカウントの配信文を作成","id":"t13"},{"due":"2026-09-20","group":"当日運営","order":30,"owner":"乾颯汰","status":"todo","title":"スパイ探し投票の進行と集計方法を決める","id":"t23"},{"due":"2026-09-30","group":"事後","order":30,"owner":"岩田紹吾","status":"todo","title":"申込者データの保管（次回案内用）","id":"t33"},{"due":"2026-09-14","group":"制作","order":40,"owner":"半谷一太","status":"todo","title":"Partners 掲載素材（STREET PV・TOPICO・にいみ農園）の回収","id":"t04"},{"due":"2026-09-24","group":"集客","order":40,"owner":"岩田紹吾","status":"todo","title":"申込者への出席リマインド（前日）","id":"t14"},{"due":"2026-09-22","group":"当日運営","order":40,"owner":"小西将理","status":"todo","title":"司会台本と進行表","id":"t24"},{"due":"2026-10-03","group":"事後","order":40,"owner":"半谷一太","status":"todo","title":"振り返りMTGと VOL.04 の日程仮決め","id":"t34"},{"due":"2026-09-13","group":"制作","order":50,"owner":"新見康樹","status":"todo","title":"GitHub 引き継ぎ README とコラボレーター招待","id":"t05"},{"due":"2026-09-11","group":"集客","order":50,"owner":"新見康樹","status":"todo","title":"共用メール buzzbase0906 の転送設定を全員分確認","id":"t15"},{"due":"2026-09-22","group":"当日運営","order":50,"owner":"達城椋","status":"todo","title":"撮影体制（STREET PV）と撮影可否の掲示","id":"t25"},{"due":"2026-09-24","group":"当日運営","order":60,"owner":"岩田紹吾","status":"todo","title":"受付リストと当日の出欠チェック担当","id":"t26"}]}</script>
 <script>
 (function(){
-  var D = JSON.parse(document.getElementById("snap").textContent);
-  var SNAPDATE = "2026-09-08";
-  var STL = {todo:"未着手", doing:"進行中", done:"完了", hold:"保留"};
-  var GROUPS = ["制作","集客","当日運営","事後"];
-  var $ = function(id){ return document.getElementById(id); };
-  var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
-  var num = function(v){ var n = parseFloat(String(v).replace(/[^\d.\-]/g,"")); return isFinite(n) ? n : 0; };
-  var pct = function(a,t){ var T = num(t); return T > 0 ? Math.round(num(a)/T*100) : 0; };
-  var d0 = new Date();
-  var today = d0.getFullYear()+"-"+String(d0.getMonth()+1).padStart(2,"0")+"-"+String(d0.getDate()).padStart(2,"0");
-
-  var ms = new Date("2026-09-25T21:00:00+09:00") - d0;
-  $("cd").textContent = ms <= 0 ? "DONE" : "D-" + Math.ceil(ms/86400000);
-  if (ms <= 0) $("cdl").textContent = "VOL.03 終了";
-  $("stamp").textContent = SNAPDATE;
-
-  $("kgis").innerHTML = D.kgi.map(function(k){
-    var p = Math.min(100, pct(k.actual, k.target));
-    return '<div class="kgi"><div class="lb">' + esc(k.label) + '</div>'
-      + '<div class="nums"><span class="now mono">' + esc(k.actual) + '</span>'
-      + '<span class="of">/ <b class="mono">' + esc(k.target) + '</b> ' + esc(k.unit || "") + '</span></div>'
-      + '<div class="meter"><i style="width:' + p + '%"></i></div>'
-      + '<div class="pc mono">' + p + '% ・ ' + esc(k.note || "") + '</div></div>';
-  }).join("");
-
-  var rc = function(p){ return p >= 80 ? "good" : p >= 40 ? "mid" : "low"; };
-  $("kpis").innerHTML = '<div class="row hd kpi-row"><span>指標</span><span class="c-own">担当</span>'
-    + '<span class="num">目標</span><span class="num">実績</span><span class="num">達成</span></div>'
-    + D.kpi.map(function(k){
-        var p = pct(k.actual, k.target);
-        return '<div class="row kpi-row"><span class="cell">' + esc(k.label) + '</span>'
-          + '<span class="cell c-own">' + esc(k.owner) + '</span>'
-          + '<span class="cell num mono">' + esc(k.target) + '</span>'
-          + '<span class="cell num mono">' + esc(k.actual) + '</span>'
-          + '<span class="cell num rate ' + rc(p) + '">' + p + '%</span></div>';
-      }).join("");
-
-  var dueCls = function(d, st){
-    if (!d || st === "done") return "";
-    if (d < today) return "late";
-    var s = new Date(); s.setDate(s.getDate()+3);
-    var iso = s.getFullYear()+"-"+String(s.getMonth()+1).padStart(2,"0")+"-"+String(s.getDate()).padStart(2,"0");
-    return d <= iso ? "soon" : "";
-  };
-  var html = "", seen = {};
-  var groups = GROUPS.concat(D.task.map(function(t){ return t.group || "その他"; }));
-  groups.forEach(function(g){
-    if (seen[g]) return; seen[g] = 1;
-    var rows = D.task.filter(function(t){ return (t.group || "その他") === g; });
-    if (!rows.length) return;
-    var done = rows.filter(function(t){ return t.status === "done"; }).length;
-    html += '<div class="grp">' + esc(g) + ' <span class="mono" style="letter-spacing:0">' + done + '/' + rows.length + '</span></div>'
-      + '<div class="row hd task-row"><span>タスク</span><span class="c-own">担当</span>'
-      + '<span>期限</span><span>状態</span><span></span></div>';
+var D = JSON.parse(document.getElementById("snap").textContent);
+var API = "https://script.google.com/macros/s/AKfycbywFqJK40l0XP6cfN-8R_Pyxifx4uP67k0Dn5l5XBxsIosHy1x25z7_XX8Oxztm7uhFbw/exec";
+var SNAPDATE = "2026-09-08";
+var CREW = ["半谷一太","新見康樹","乾颯汰","達城椋","岩田紹吾","小西将理"];
+var GROUPS = ["制作","集客","当日運営","事後"];
+var CYCLE = ["未着手","進行中","完了","保留"];
+var CLS = {"未着手":"todo","進行中":"doing","完了":"done","保留":"hold"};
+var $ = function(id){ return document.getElementById(id); };
+var esc = function(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); };
+var n2 = function(n){ return String(n).padStart(2,"0"); };
+var d0 = new Date();
+var today = d0.getFullYear()+"-"+n2(d0.getMonth()+1)+"-"+n2(d0.getDate());
+function normDue(v){
+  if(!v) return "";
+  if(/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0,10);
+  var d = new Date(v);
+  return isNaN(d) ? "" : d.getFullYear()+"-"+n2(d.getMonth()+1)+"-"+n2(d.getDate());
+}
+var me = "";
+try { me = localStorage.getItem("bb-me") || ""; } catch(e){}
+var tasks = [], busy = false, err = null;
+var ms = new Date("2026-09-25T21:00:00+09:00") - d0;
+$("cd").textContent = ms<=0 ? "DONE" : "D-"+Math.ceil(ms/86400000);
+if(ms<=0) $("cdl").textContent = "VOL.03 終了";
+$("stamp").textContent = SNAPDATE;
+var num = function(v){ var n=parseFloat(String(v).replace(/[^\d.\-]/g,"")); return isFinite(n)?n:0; };
+var pct = function(a,t){ var T=num(t); return T>0?Math.round(num(a)/T*100):0; };
+$("kgis").innerHTML = D.kgi.map(function(k){
+  var p = Math.min(100, pct(k.actual,k.target));
+  return '<div class="kgi"><div class="lb">'+esc(k.label)+'</div>'
+   +'<div class="nums"><span class="now mono">'+esc(k.actual)+'</span>'
+   +'<span class="of">/ <b class="mono">'+esc(k.target)+'</b> '+esc(k.unit||"")+'</span></div>'
+   +'<div class="meter"><i style="width:'+p+'%"></i></div>'
+   +'<div class="pc mono">'+p+'% ・ '+esc(k.note||"")+'</div></div>';
+}).join("");
+var rc = function(p){ return p>=80?"good":p>=40?"mid":"low"; };
+$("kpis").innerHTML = '<div class="row hd kpi-row"><span>指標</span><span class="c-own">担当</span><span class="num">目標</span><span class="num">実績</span><span class="num">達成</span></div>'
+ + D.kpi.map(function(k){ var p=pct(k.actual,k.target);
+     return '<div class="row kpi-row"><span class="cell">'+esc(k.label)+'</span>'
+      +'<span class="cell c-own">'+esc(k.owner)+'</span>'
+      +'<span class="cell num mono">'+esc(k.target)+'</span>'
+      +'<span class="cell num mono">'+esc(k.actual)+'</span>'
+      +'<span class="cell num rate '+rc(p)+'">'+p+'%</span></div>'; }).join("");
+function dueCls(d,st){
+  if(!d || st==="完了") return "";
+  if(d<today) return "late";
+  var s=new Date(); s.setDate(s.getDate()+3);
+  return d <= s.getFullYear()+"-"+n2(s.getMonth()+1)+"-"+n2(s.getDate()) ? "soon" : "";
+}
+function renderTasks(){
+  var box = $("tasks");
+  if(err){ box.innerHTML = '<p class="empty" style="color:var(--st-late)">'+esc(err)+'</p>'; return; }
+  if(!tasks.length){ box.innerHTML = '<p class="empty">読み込み中…</p>'; return; }
+  var html="", seen={};
+  GROUPS.concat(tasks.map(function(t){return t.group||"その他";})).forEach(function(g){
+    if(seen[g]) return; seen[g]=1;
+    var rows = tasks.filter(function(t){ return (t.group||"その他")===g; });
+    if(!rows.length) return;
+    var done = rows.filter(function(t){ return t.status==="完了"; }).length;
+    html += '<div class="grp">'+esc(g)+' <span class="mono" style="letter-spacing:0">'+done+'/'+rows.length+'</span></div>'
+      + '<div class="row hd task-row"><span>タスク</span><span class="c-own">担当</span><span>期限</span><span>状態</span><span></span></div>';
     rows.forEach(function(t){
-      var st = STL[t.status] ? t.status : "todo";
-      html += '<div class="row task-row' + (st === "done" ? " done-row" : "") + '">'
-        + '<span class="cell">' + esc(t.title) + '</span>'
-        + '<span class="cell c-own">' + esc(t.owner) + '</span>'
-        + '<span class="cell mono due ' + dueCls(t.due, st) + '">' + esc(t.due || "—") + '</span>'
-        + '<span class="cell"><span class="pill ro ' + st + '">' + STL[st] + '</span></span>'
-        + '<span class="cell"></span></div>';
+      var st = CLS[t.status] ? t.status : "未着手";
+      var due = normDue(t.due);
+      html += '<div class="row task-row'+(st==="完了"?" done-row":"")+'">'
+        +'<span class="cell">'+esc(t.title)+'</span>'
+        +'<span class="cell c-own">'+esc(t.owner)+'</span>'
+        +'<span class="cell mono due '+dueCls(due,st)+'">'+esc(due||"—")+'</span>'
+        +'<span class="cell"><button class="pill '+CLS[st]+'" data-id="'+esc(t.id)+'" title="押すと次の状態へ">'+esc(st)+'</button></span>'
+        +'<span class="cell"></span></div>';
     });
   });
-  $("tasks").innerHTML = html;
-
-  $("foot").innerHTML = "目標値は叩き台です。実際に狙う数字に置き換えてください。"
-    + "／ このページは検索除外（noindex）設定です。";
+  box.innerHTML = html;
+}
+function say(m){ $("tstate").textContent = m || ""; }
+function load(){
+  say("読み込み中…");
+  fetch(API, {method:"GET"}).then(function(r){ return r.json(); }).then(function(j){
+    if(!j.ok) throw new Error(j.error||"error");
+    tasks = j.tasks; err=null; renderTasks(); say("最終同期 "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
+  }).catch(function(e){
+    err = "タスクを読み込めませんでした。時間をおいて再読み込みしてください。"; renderTasks(); say("");
+  });
+}
+function send(body){
+  if(busy) return; busy=true; say("保存中…");
+  fetch(API, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(body)})
+   .then(function(r){ return r.json(); }).then(function(j){
+      busy=false;
+      if(!j.ok) throw new Error(j.error||"error");
+      tasks=j.tasks; err=null; renderTasks(); say("保存しました "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
+   }).catch(function(e){ busy=false; say("保存できませんでした。もう一度お試しください。"); });
+}
+document.addEventListener("click", function(ev){
+  var b = ev.target.closest && ev.target.closest("[data-id]");
+  if(!b) return;
+  var t = tasks.filter(function(x){ return String(x.id)===b.dataset.id; })[0];
+  if(!t) return;
+  var next = CYCLE[(CYCLE.indexOf(CLS[t.status]?t.status:"未着手")+1)%CYCLE.length];
+  t.status = next; renderTasks();
+  send({action:"status", id:t.id, status:next, by:me});
+});
+$("meSel").innerHTML = '<option value="">選択</option>'+CREW.map(function(n){ return '<option'+(n===me?" selected":"")+'>'+esc(n)+'</option>'; }).join("");
+$("meSel").onchange = function(e){ me=e.target.value; try{ localStorage.setItem("bb-me",me); }catch(err){} };
+$("addBtn").onclick = function(){ var f=$("addForm"); var open = f.style.display !== "none"; f.style.display = open ? "none" : "flex"; if(!open) $("aTitle").focus(); };
+$("aGroup").innerHTML = GROUPS.map(function(g){ return '<option>'+esc(g)+'</option>'; }).join("");
+$("aOwner").innerHTML = '<option value="">担当なし</option>'+CREW.map(function(n){ return '<option'+(n===me?" selected":"")+'>'+esc(n)+'</option>'; }).join("");
+$("aSave").onclick = function(){
+  var title = $("aTitle").value.trim();
+  if(!title){ $("aTitle").focus(); return; }
+  send({action:"add", title:title, group:$("aGroup").value, owner:$("aOwner").value, due:$("aDue").value, by:me});
+  $("aTitle").value=""; $("aDue").value=""; $("addForm").style.display = "none";
+};
+$("reload").onclick = load;
+load();
 })();
 </script>
 </body>
