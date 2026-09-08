@@ -513,6 +513,237 @@ section{margin-top:30px}
 </div>
 
 <script id="snap" type="application/json">{"kgi":[{"actual":"0","label":"VOL.03 当日の来場者数","note":"招待制の想定キャパから逆算","order":10,"target":"80","unit":"名","id":"g1"},{"actual":"0","label":"参加者満足度（事後アンケート平均）","note":"当日配布のフォームで回収","order":20,"target":"4.5","unit":"/ 5.0","id":"g2"},{"actual":"0","label":"VOL.04 に参加したい と答えた割合","note":"次回につながるかの本丸","order":30,"target":"80","unit":"%","id":"g3"}],"kpi":[{"actual":"0","label":"申込フォーム送信数（shokei.me/buzzbase/entry.html）","order":10,"owner":"新見康樹","target":"120","id":"k1"},{"actual":"0","label":"招待DM・声かけの送付数","order":20,"owner":"小西将理","target":"200","id":"k2"},{"actual":"0","label":"出席確定数（リマインドに返信あり）","order":30,"owner":"岩田紹吾","target":"100","id":"k3"},{"actual":"0","label":"Instagram @buzzbase.05.22 フォロワー増","order":40,"owner":"小西将理","target":"500","id":"k4"},{"actual":"0","label":"LINE公式 BUZZ BASE 友だち数","order":50,"owner":"乾颯汰","target":"300","id":"k5"},{"actual":"0","label":"LINE公式 BUZZ Student 友だち数","order":60,"owner":"乾颯汰","target":"200","id":"k6"},{"actual":"3","label":"掲載パートナー・協賛社数","order":70,"owner":"半谷一太","target":"5","id":"k7"},{"actual":"0","label":"ティザー映像の再生数","order":80,"owner":"達城椋","target":"3000","id":"k8"},{"actual":"0","label":"事後アンケート回答率","order":90,"owner":"新見康樹","target":"60","id":"k9"}],"task":[{"due":"2026-09-12","group":"制作","order":10,"owner":"新見康樹","status":"doing","title":"告知サイトの本文・クルー欄を最終確定","id":"t01"},{"due":"2026-09-10","group":"集客","order":10,"owner":"小西将理","status":"todo","title":"招待リストの確定（誰に何人送るか）","id":"t11"},{"due":"2026-09-18","group":"当日運営","order":10,"owner":"半谷一太","status":"todo","title":"7CLOVER Shibuya と当日タイムテーブルの詰め","id":"t21"},{"due":"2026-09-26","group":"事後","order":10,"owner":"新見康樹","status":"todo","title":"事後アンケートの配信","id":"t31"},{"due":"2026-09-12","group":"制作","order":20,"owner":"新見康樹","status":"todo","title":"申込フォーム（entry.html）の動作確認","id":"t02"},{"due":"2026-09-11","group":"集客","order":20,"owner":"小西将理","status":"todo","title":"Instagram 告知投稿 第1弾","id":"t12"},{"due":"2026-09-22","group":"当日運営","order":20,"owner":"乾颯汰","status":"todo","title":"封筒ミッションの中身を用意・印刷","id":"t22"},{"due":"2026-09-30","group":"事後","order":20,"owner":"達城椋","status":"todo","title":"写真・映像の掲載同意を突き合わせてから公開","id":"t32"},{"due":"2026-09-15","group":"制作","order":30,"owner":"達城椋","status":"todo","title":"ティザー映像の完成・#/thanks への組み込み","id":"t03"},{"due":"2026-09-13","group":"集客","order":30,"owner":"乾颯汰","status":"todo","title":"LINE公式 2アカウントの配信文を作成","id":"t13"},{"due":"2026-09-20","group":"当日運営","order":30,"owner":"乾颯汰","status":"todo","title":"スパイ探し投票の進行と集計方法を決める","id":"t23"},{"due":"2026-09-30","group":"事後","order":30,"owner":"岩田紹吾","status":"todo","title":"申込者データの保管（次回案内用）","id":"t33"},{"due":"2026-09-14","group":"制作","order":40,"owner":"半谷一太","status":"todo","title":"Partners 掲載素材（STREET PV・TOPICO・にいみ農園）の回収","id":"t04"},{"due":"2026-09-24","group":"集客","order":40,"owner":"岩田紹吾","status":"todo","title":"申込者への出席リマインド（前日）","id":"t14"},{"due":"2026-09-22","group":"当日運営","order":40,"owner":"小西将理","status":"todo","title":"司会台本と進行表","id":"t24"},{"due":"2026-10-03","group":"事後","order":40,"owner":"半谷一太","status":"todo","title":"振り返りMTGと VOL.04 の日程仮決め","id":"t34"},{"due":"2026-09-13","group":"制作","order":50,"owner":"新見康樹","status":"todo","title":"GitHub 引き継ぎ README とコラボレーター招待","id":"t05"},{"due":"2026-09-11","group":"集客","order":50,"owner":"新見康樹","status":"todo","title":"共用メール buzzbase0906 の転送設定を全員分確認","id":"t15"},{"due":"2026-09-22","group":"当日運営","order":50,"owner":"達城椋","status":"todo","title":"撮影体制（STREET PV）と撮影可否の掲示","id":"t25"},{"due":"2026-09-24","group":"当日運営","order":60,"owner":"岩田紹吾","status":"todo","title":"受付リストと当日の出欠チェック担当","id":"t26"}]}</script>
+  <section id="share">
+    <div class="head"><h2>SHARE</h2><span class="sub">情報共有 — メモ・リンク・表・ファイルをクルー全員に共有</span></div>
+    <div class="shbar">
+      <div class="shtags" id="shtags"></div>
+      <div class="shctl">
+        <button class="shbtn ghost" id="shreload" type="button">更新</button>
+        <button class="shbtn" id="shopen" type="button">＋ 投稿する</button>
+      </div>
+    </div>
+    <div class="tbl shform" id="shform" hidden>
+      <div class="shgrid">
+        <label class="fld"><span>名前</span><select id="shwho"></select></label>
+        <label class="fld"><span>カテゴリ</span><select id="shtag"></select></label>
+        <label class="fld wide"><span>タイトル</span><input id="shttl" type="text" placeholder="例：当日タイムテーブル 第2稿" maxlength="120"></label>
+        <label class="fld wide"><span>本文</span><textarea id="shbody" rows="4" placeholder="共有したい内容・決まったこと・お願いなど"></textarea></label>
+        <label class="fld wide"><span>リンク</span><textarea id="shlinks" rows="2" placeholder="URLを1行に1つ（スプレッドシート、ドライブ、参考記事など）"></textarea></label>
+        <label class="fld wide"><span>表データ</span><textarea id="shtable" rows="3" placeholder="スプレッドシートやExcelからコピーして貼り付け（タブ区切り／CSVどちらでもOK）"></textarea></label>
+        <label class="fld wide"><span>ファイル</span><input id="shfiles" type="file" multiple></label>
+      </div>
+      <div class="shfoot">
+        <span class="shnote" id="shnote">ファイルは1つ8MBまで。投稿するとクルー全員（このURLを知っている人）が見られます。</span>
+        <span class="shacts"><button class="shbtn ghost" id="shcancel" type="button">やめる</button><button class="shbtn" id="shsend" type="button">投稿する</button></span>
+      </div>
+    </div>
+    <div id="shfeed"><div class="shmsg">読み込み中…</div></div>
+  </section>
+  <style>
+    .shbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .shtags{display:flex;flex-wrap:wrap;gap:6px}
+    .shtags button{font:inherit;font-size:11px;letter-spacing:.02em;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:999px;padding:4px 12px;cursor:pointer}
+    .shtags button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+    .shctl{display:flex;gap:8px}
+    .shbtn{font:inherit;font-size:11.5px;letter-spacing:.04em;cursor:pointer;background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:3px;padding:6px 14px}
+    .shbtn.ghost{background:var(--surface);color:var(--ink-2);border-color:var(--rule)}
+    .shbtn:disabled{opacity:.45;cursor:default}
+    .shform{padding:16px}
+    .shgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+    .fld{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--ink-3)}
+    .fld.wide{grid-column:1 / -1}
+    .fld input[type=text],.fld textarea,.fld select{font:inherit;font-size:12.5px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:7px 9px;width:100%;box-sizing:border-box}
+    .fld textarea{resize:vertical;line-height:1.6}
+    .fld input[type=file]{font-size:11.5px;color:var(--ink-2)}
+    .shfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--rule-soft)}
+    .shnote{font-size:10.5px;color:var(--ink-3);line-height:1.6}
+    .shacts{display:flex;gap:8px}
+    .shmsg{padding:20px 4px;font-size:12px;color:var(--ink-3)}
+    .shmsg.bad{color:var(--st-late)}
+    .post{background:var(--surface);border:1px solid var(--rule);border-radius:3px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:10px}
+    .pmeta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px}
+    .ptag{font-size:9.5px;letter-spacing:.08em;border-radius:2px;padding:2px 7px;background:var(--surface-2);color:var(--ink-2)}
+    .ptag.t1{background:#E8F1EC;color:#1C7A4C}
+    .ptag.t2{background:#FBEDE0;color:#B87400}
+    .ptag.t3{background:#E7EDFA;color:#1E56C8}
+    .ptag.t4{background:#F0E9FA;color:#6E3FBF}
+    .pwho{font-size:11px;color:var(--ink-2)}
+    .pat{font-size:10.5px;color:var(--ink-3);margin-left:auto}
+    .pttl{font-size:14.5px;font-weight:700;line-height:1.5;margin:0 0 6px;color:var(--ink)}
+    .pbody{font-size:12.5px;line-height:1.85;color:var(--ink-2);white-space:pre-wrap;word-break:break-word;margin:0 0 8px}
+    .pbody a,.plinks a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+    .plinks{list-style:none;margin:0 0 8px;padding:0;font-size:12px;line-height:1.9}
+    .plinks li:before{content:"↗";color:var(--ink-3);margin-right:6px;font-size:10px}
+    .ptblwrap{overflow-x:auto;margin:0 0 8px;border:1px solid var(--rule-soft);border-radius:3px}
+    .ptbl{border-collapse:collapse;font-size:11.5px;min-width:100%}
+    .ptbl th,.ptbl td{border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft);padding:5px 9px;text-align:left;white-space:nowrap}
+    .ptbl th{background:var(--surface-2);font-weight:600;color:var(--ink-2)}
+    .ptbl tr:last-child td{border-bottom:0}
+    .pfiles{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+    .pfile{font-size:11px;color:var(--ink-2);border:1px solid var(--rule);border-radius:3px;padding:4px 9px;text-decoration:none;background:var(--surface-2)}
+    .pfile:hover{border-color:var(--ink-3)}
+    .pact{display:flex;justify-content:flex-end;margin-top:4px}
+    .pdel{font:inherit;font-size:10.5px;color:var(--ink-3);background:none;border:0;cursor:pointer;padding:2px 4px}
+    .pdel.arm{color:var(--st-late);font-weight:700}
+    @media (max-width:640px){.shgrid{grid-template-columns:1fr}}
+    @media (prefers-color-scheme: dark){
+      :root:not([data-theme="light"]) .ptag.t1{background:#14301F;color:#48C88B}
+      :root:not([data-theme="light"]) .ptag.t2{background:#33230C;color:#E0A233}
+      :root:not([data-theme="light"]) .ptag.t3{background:#15224A;color:#7FA3F5}
+      :root:not([data-theme="light"]) .ptag.t4{background:#241A3D;color:#B18CF0}
+    }
+  </style>
+  <script>
+  (function(){
+    var API = "https://script.google.com/macros/s/AKfycbywFqJK40l0XP6cfN-8R_Pyxifx4uP67k0Dn5l5XBxsIosHy1x25z7_XX8Oxztm7uhFbw/exec";
+    var WHO = ["新見康樹","岩田紹吾","達城椋","乾颯汰","海老澤悠希","小西将理","半谷一太"];
+    var TAGS = ["制作","集客","当日運営","事後","その他"];
+    var TCLS = {"制作":"t1","集客":"t2","当日運営":"t3","事後":"t4"};
+    var MAXF = 8 * 1024 * 1024;
+    var posts = null, filter = "すべて", busy = false, err = "";
+    var $ = function(id){ return document.getElementById(id); };
+    var esc = function(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); };
+    function autolink(s){
+      return esc(s).replace(/(https?:\/\/[^\s<]+)/g, function(u){ return '<a href="'+u+'" target="_blank" rel="noopener">'+u+'</a>'; });
+    }
+    function post(payload){
+      return fetch(API, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)}).then(function(r){ return r.json(); });
+    }
+    function fillSelects(){
+      $("shwho").innerHTML = WHO.map(function(n){ return '<option>'+esc(n)+'</option>'; }).join("");
+      $("shtag").innerHTML = TAGS.map(function(n){ return '<option>'+esc(n)+'</option>'; }).join("");
+      try { var sv = localStorage.getItem("bbshwho"); if (sv && WHO.indexOf(sv) >= 0) $("shwho").value = sv; } catch(e){}
+    }
+    function drawTags(){
+      var all = ["すべて"].concat(TAGS);
+      $("shtags").innerHTML = all.map(function(t){
+        var n = t === "すべて" ? (posts ? posts.length : 0) : (posts ? posts.filter(function(p){ return p.tag === t; }).length : 0);
+        return '<button type="button" data-t="'+esc(t)+'" class="'+(filter===t?"on":"")+'">'+esc(t)+' '+n+'</button>';
+      }).join("");
+      [].forEach.call($("shtags").querySelectorAll("button"), function(b){
+        b.onclick = function(){ filter = b.getAttribute("data-t"); drawTags(); drawFeed(); };
+      });
+    }
+    function parseTable(txt){
+      var lines = String(txt||"").split(/\r?\n/).filter(function(l){ return l.trim() !== ""; });
+      if (lines.length < 1) return null;
+      var sep = lines[0].indexOf("\t") >= 0 ? "\t" : (lines[0].indexOf(",") >= 0 ? "," : null);
+      if (!sep) return null;
+      return lines.map(function(l){ return l.split(sep); });
+    }
+    function tableHtml(txt){
+      var rows = parseTable(txt);
+      if (!rows) return "";
+      var h = '<div class="ptblwrap"><table class="ptbl"><thead><tr>' + rows[0].map(function(c){ return '<th>'+esc(c)+'</th>'; }).join("") + '</tr></thead><tbody>';
+      for (var i=1;i<rows.length;i++){
+        h += '<tr>' + rows[i].map(function(c){ return '<td>'+esc(c)+'</td>'; }).join("") + '</tr>';
+      }
+      return h + '</tbody></table></div>';
+    }
+    function drawFeed(){
+      var el = $("shfeed");
+      if (posts === null){ el.innerHTML = '<div class="shmsg'+(err?' bad':'')+'">'+esc(err || "読み込み中…")+'</div>'; return; }
+      var list = filter === "すべて" ? posts : posts.filter(function(p){ return p.tag === filter; });
+      if (!list.length){ el.innerHTML = '<div class="shmsg">まだ投稿がありません。「＋ 投稿する」から共有してください。</div>'; return; }
+      el.innerHTML = list.map(function(p){
+        var h = '<div class="post" data-p="'+esc(p.id)+'">';
+        h += '<div class="pmeta"><span class="ptag '+(TCLS[p.tag]||"")+'">'+esc(p.tag||"その他")+'</span><span class="pwho">'+esc(p.author||"名無し")+'</span><span class="pat">'+esc(p.createdAt||"")+'</span></div>';
+        if (p.title) h += '<p class="pttl">'+esc(p.title)+'</p>';
+        if (p.body) h += '<p class="pbody">'+autolink(p.body)+'</p>';
+        if (p.links && p.links.length){
+          h += '<ul class="plinks">' + p.links.map(function(u){ return '<li><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(u)+'</a></li>'; }).join("") + '</ul>';
+        }
+        if (p.table) h += tableHtml(p.table);
+        if (p.files && p.files.length){
+          h += '<div class="pfiles">' + p.files.map(function(f){ return '<a class="pfile" href="'+esc(f.url)+'" target="_blank" rel="noopener">'+esc(f.name)+'</a>'; }).join("") + '</div>';
+        }
+        h += '<div class="pact"><button class="pdel" type="button" data-del="'+esc(p.id)+'">削除</button></div>';
+        return h + '</div>';
+      }).join("");
+      [].forEach.call(el.querySelectorAll("[data-del]"), function(b){
+        b.onclick = function(){
+          if (b.classList.contains("arm")){
+            b.disabled = true; b.textContent = "削除中…";
+            post({action:"delpost", id:b.getAttribute("data-del")}).then(function(j){
+              if (j && j.ok){ posts = j.posts || []; drawTags(); drawFeed(); }
+            });
+          } else {
+            b.classList.add("arm"); b.textContent = "本当に削除？";
+            setTimeout(function(){ if (b.isConnected){ b.classList.remove("arm"); b.textContent = "削除"; } }, 4000);
+          }
+        };
+      });
+    }
+    function load(){
+      err = "";
+      fetch(API + "?what=posts&t=" + Date.now()).then(function(r){ return r.json(); }).then(function(j){
+        if (!j || !j.ok) throw new Error((j && j.error) || "unknown");
+        posts = j.posts || [];
+        drawTags(); drawFeed();
+      }).catch(function(e){
+        err = "共有ボードを読み込めませんでした（" + String(e && e.message || e) + "）。「更新」を押してください。";
+        if (posts === null) drawFeed();
+      });
+    }
+    function b64(file){
+      return new Promise(function(res, rej){
+        var fr = new FileReader();
+        fr.onload = function(){ res(String(fr.result).split(",")[1] || ""); };
+        fr.onerror = rej;
+        fr.readAsDataURL(file);
+      });
+    }
+    $("shopen").onclick = function(){ $("shform").hidden = false; $("shopen").disabled = true; $("shttl").focus(); };
+    $("shcancel").onclick = function(){ $("shform").hidden = true; $("shopen").disabled = false; };
+    $("shreload").onclick = load;
+    $("shsend").onclick = function(){
+      if (busy) return;
+      var body = $("shbody").value.trim(), ttl = $("shttl").value.trim();
+      var links = $("shlinks").value.split(/\r?\n/).map(function(s){ return s.trim(); }).filter(function(s){ return /^https?:\/\//.test(s); });
+      var tbl = $("shtable").value.trim();
+      var files = [].slice.call($("shfiles").files || []);
+      if (!ttl && !body && !links.length && !tbl && !files.length){ $("shnote").textContent = "タイトルか本文、リンク、表、ファイルのどれかを入れてください。"; return; }
+      var over = files.filter(function(f){ return f.size > MAXF; });
+      if (over.length){ $("shnote").textContent = "8MBを超えるファイルがあります：" + over.map(function(f){ return f.name; }).join("、"); return; }
+      busy = true; $("shsend").disabled = true; $("shsend").textContent = "送信中…";
+      var who = $("shwho").value;
+      try { localStorage.setItem("bbshwho", who); } catch(e){}
+      var uploaded = [];
+      var chain = Promise.resolve();
+      files.forEach(function(f, i){
+        chain = chain.then(function(){
+          $("shnote").textContent = "ファイルを送信中… (" + (i+1) + "/" + files.length + ") " + f.name;
+          return b64(f).then(function(data){
+            return post({action:"upload", name:f.name, mime:f.type, data:data}).then(function(j){
+              if (j && j.ok && j.file) uploaded.push(j.file);
+              else throw new Error((j && j.error) || "アップロード失敗");
+            });
+          });
+        });
+      });
+      chain.then(function(){
+        $("shnote").textContent = "投稿を保存中…";
+        return post({action:"post", author:who, tag:$("shtag").value, title:ttl, body:body, links:links, files:uploaded, table:tbl});
+      }).then(function(j){
+        if (!j || !j.ok) throw new Error((j && j.error) || "保存失敗");
+        posts = j.posts || [];
+        $("shttl").value = ""; $("shbody").value = ""; $("shlinks").value = ""; $("shtable").value = ""; $("shfiles").value = "";
+        $("shform").hidden = true; $("shopen").disabled = false;
+        $("shnote").textContent = "ファイルは1つ8MBまで。投稿するとクルー全員（このURLを知っている人）が見られます。";
+        drawTags(); drawFeed();
+      }).catch(function(e){
+        $("shnote").textContent = "送信できませんでした（" + String(e && e.message || e) + "）。もう一度お試しください。";
+      }).then(function(){
+        busy = false; $("shsend").disabled = false; $("shsend").textContent = "投稿する";
+      });
+    };
+    fillSelects();
+    drawTags();
+    load();
+    setInterval(function(){ if (!document.hidden && !busy) load(); }, 300000);
+  })();
+  </script>
+
 <script>
 (function(){
 var D = JSON.parse(document.getElementById("snap").textContent);
