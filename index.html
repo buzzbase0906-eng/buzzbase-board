@@ -196,9 +196,9 @@ section{margin-top:30px}
 .ro .ed{cursor:default}
 .ro .ed:hover{background:none;box-shadow:none}
 .pill.ro{cursor:default}
-.ownsel{font:inherit;font-size:inherit;color:inherit;letter-spacing:inherit;background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:2px 4px;cursor:pointer;max-width:100%}
-.ownsel:hover{background:var(--surface-2)}
-.ownsel:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.ownsel,.kownsel{font:inherit;font-size:inherit;color:inherit;letter-spacing:inherit;background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:2px 4px;cursor:pointer;max-width:100%}
+.ownsel:hover,.kownsel:hover{background:var(--surface-2)}
+.ownsel:focus,.kownsel:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -782,13 +782,17 @@ $("kgis").innerHTML = D.kgi.map(function(k){
    +'<div class="pc mono">'+p+'% ・ '+esc(k.note||"")+'</div></div>';
 }).join("");
 var rc = function(p){ return p>=80?"good":p>=40?"mid":"low"; };
-$("kpis").innerHTML = '<div class="row hd kpi-row"><span>指標</span><span class="c-own">担当</span><span class="num">目標</span><span class="num">実績</span><span class="num">達成</span></div>'
- + D.kpi.map(function(k){ var p=pct(k.actual,k.target);
-     return '<div class="row kpi-row"><span class="cell">'+esc(k.label)+'</span>'
-      +'<span class="cell c-own">'+esc(k.owner)+'</span>'
-      +'<span class="cell num mono">'+esc(k.target)+'</span>'
-      +'<span class="cell num mono">'+esc(k.actual)+'</span>'
-      +'<span class="cell num rate '+rc(p)+'">'+p+'%</span></div>'; }).join("");
+var kown = {};
+function renderKpis(){
+  $("kpis").innerHTML = '<div class="row hd kpi-row"><span>指標</span><span class="c-own">担当</span><span class="num">目標</span><span class="num">実績</span><span class="num">達成</span></div>'
+   + D.kpi.map(function(k){ var p=pct(k.actual,k.target);
+       return '<div class="row kpi-row"><span class="cell">'+esc(k.label)+'</span>'
+        +'<span class="cell c-own"><select class="kownsel" data-kown="'+esc(k.id)+'" title="担当を選ぶ">'+ownOpts(kown[k.id]||k.owner)+'</select></span>'
+        +'<span class="cell num mono">'+esc(k.target)+'</span>'
+        +'<span class="cell num mono">'+esc(k.actual)+'</span>'
+        +'<span class="cell num rate '+rc(p)+'">'+p+'%</span></div>'; }).join("");
+}
+renderKpis();
 function dueCls(d,st){
   if(!d || st==="完了") return "";
   if(d<today) return "late";
@@ -825,7 +829,7 @@ function load(){
   say("読み込み中…");
   fetch(API, {method:"GET"}).then(function(r){ return r.json(); }).then(function(j){
     if(!j.ok) throw new Error(j.error||"error");
-    tasks = j.tasks; err=null; renderTasks(); say("最終同期 "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
+    tasks = j.tasks; if(j.kpis){ kown = j.kpis; } err=null; renderTasks(); renderKpis(); say("最終同期 "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
   }).catch(function(e){
     err = "タスクを読み込めませんでした。時間をおいて再読み込みしてください。"; renderTasks(); say("");
   });
@@ -836,7 +840,7 @@ function send(body){
    .then(function(r){ return r.json(); }).then(function(j){
       busy=false;
       if(!j.ok) throw new Error(j.error||"error");
-      tasks=j.tasks; err=null; renderTasks(); say("保存しました "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
+      tasks=j.tasks; if(j.kpis){ kown = j.kpis; } err=null; renderTasks(); renderKpis(); say("保存しました "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
    }).catch(function(e){ busy=false; say("保存できませんでした。もう一度お試しください。"); });
 }
 function ownOpts(cur){
@@ -845,6 +849,13 @@ function ownOpts(cur){
   if(pool.indexOf(c) < 0) pool.push(c);
   return pool.map(function(n){ return '<option value="'+esc(n==="未定"?"":n)+'"'+(n===c?" selected":"")+'>'+esc(n)+'</option>'; }).join("");
 }
+document.addEventListener("change", function(ev){
+  var ks = ev.target.closest && ev.target.closest(".kownsel");
+  if(!ks) return;
+  var kid = ks.getAttribute("data-kown");
+  kown[kid] = ks.value; renderKpis();
+  send({action:"kpiowner", id:kid, owner:ks.value, by:me});
+});
 document.addEventListener("change", function(ev){
   var s = ev.target.closest && ev.target.closest(".ownsel");
   if(!s) return;
