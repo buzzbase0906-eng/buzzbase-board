@@ -225,14 +225,14 @@ section{margin-top:30px}
     <div class="calbar">
       <div class="callegend" id="callegend"></div>
       <div class="calctl">
-        <label>期間<select id="caldays"><option value="7">7日</option><option value="14">14日</option><option value="3">3日</option></select></label>
+        <label>期間<select id="caldays"><option value="1">1日</option><option value="3">3日</option><option value="7">1週間</option><option value="14">2週間</option></select></label>
         <label>時間帯<select id="calwin"><option value="8-22">8:00-22:00</option><option value="6-24">6:00-24:00</option><option value="9-19">9:00-19:00</option></select></label>
         <label>空き<select id="calmin"><option value="30">30分以上</option><option value="60">1時間以上</option><option value="120">2時間以上</option></select></label>
         <button class="calbtn" id="calrefresh" type="button">更新</button>
       </div>
     </div>
     <div class="tbl" id="calwrap"><div class="calmsg">カレンダーを読み込み中…</div></div>
-    <p class="foot" style="margin-top:10px;border:0;padding:0">緑の帯＝えらんだメンバー全員が予定なしの時間。上の名前ボタンを押すと、その人を空き時間の計算から外せます（例：小西を外して5人の空きを見る）。予定名の前にその人の名前が付いています。終日予定は日付の右に出ます。</p>
+    <p class="foot" style="margin-top:10px;border:0;padding:0">緑の帯＝えらんだメンバー全員が予定なしの時間。期間は1日／3日／1週間／2週間から選べます。上の名前ボタンを押すと、その人を空き時間の計算から外せます（例：小西を外して5人の空きを見る）。予定名の前にその人の名前が付いています。終日予定は日付の右に出ます。</p>
   </section>
   <style>
     .calbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
