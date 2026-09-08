@@ -196,6 +196,9 @@ section{margin-top:30px}
 .ro .ed{cursor:default}
 .ro .ed:hover{background:none;box-shadow:none}
 .pill.ro{cursor:default}
+.ownbtn{font:inherit;font-size:inherit;color:inherit;letter-spacing:inherit;background:transparent;border:1px dashed var(--rule);border-radius:3px;padding:1px 7px;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ownbtn:hover{border-style:solid;background:var(--surface-2)}
+.ownbtn:empty::after{content:"未定";color:var(--ink-3)}
 </style>
 </head>
 <body>
@@ -535,7 +538,7 @@ function renderTasks(){
       var due = normDue(t.due);
       html += '<div class="row task-row'+(st==="完了"?" done-row":"")+'">'
         +'<span class="cell">'+esc(t.title)+'</span>'
-        +'<span class="cell c-own">'+esc(t.owner)+'</span>'
+        +'<span class="cell c-own"><button class="ownbtn" data-own="'+esc(t.id)+'" title="押すと担当が次の人へ">'+esc(t.owner||"未定")+'</button></span>'
         +'<span class="cell mono due '+dueCls(due,st)+'">'+esc(due||"—")+'</span>'
         +'<span class="cell"><button class="pill '+CLS[st]+'" data-id="'+esc(t.id)+'" title="押すと次の状態へ">'+esc(st)+'</button></span>'
         +'<span class="cell"></span></div>';
@@ -563,7 +566,20 @@ function send(body){
    }).catch(function(e){ busy=false; say("保存できませんでした。もう一度お試しください。"); });
 }
 document.addEventListener("click", function(ev){
-  var b = ev.target.closest && ev.target.closest("[data-id]");
+  var o = ev.target.closest && ev.target.closest("[data-own]");
+    if(o){
+      var ot = tasks.filter(function(x){ return String(x.id)===o.dataset.own; })[0];
+      if(ot){
+        var pool = ["未定"].concat(CREW);
+        var cur = ot.owner || "未定";
+        if(pool.indexOf(cur) < 0) pool.push(cur);
+        var nx = pool[(pool.indexOf(cur)+1)%pool.length];
+        ot.owner = (nx==="未定" ? "" : nx); renderTasks();
+        send({action:"owner", id:ot.id, owner:ot.owner, by:me});
+      }
+      return;
+    }
+    var b = ev.target.closest && ev.target.closest("[data-id]");
   if(!b) return;
   var t = tasks.filter(function(x){ return String(x.id)===b.dataset.id; })[0];
   if(!t) return;
