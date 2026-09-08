@@ -218,7 +218,7 @@ section{margin-top:30px}
   </p>
 
   <section id="schedule">
-    <div class="head"><h2>SCHEDULE</h2><span class="sub">クルー6人の予定＋全員の空き時間（Googleカレンダー直結・自動更新）</span></div>
+    <div class="head"><h2>SCHEDULE</h2><span class="sub">クルー6人の予定＋みんなの空き時間（Googleカレンダー直結・自動更新）</span></div>
     <div class="calbar">
       <div class="callegend" id="callegend"></div>
       <div class="calctl">
@@ -229,12 +229,13 @@ section{margin-top:30px}
       </div>
     </div>
     <div class="tbl" id="calwrap"><div class="calmsg">カレンダーを読み込み中…</div></div>
-    <p class="foot" style="margin-top:10px;border:0;padding:0">緑の帯＝クルー6人全員が予定なしの時間（選択した時間帯・最短時間以上）。予定名の前にその人の名前が付いています。終日予定は日付の右に出ます。</p>
+    <p class="foot" style="margin-top:10px;border:0;padding:0">緑の帯＝えらんだメンバー全員が予定なしの時間。上の名前ボタンを押すと、その人を空き時間の計算から外せます（例：小西を外して5人の空きを見る）。予定名の前にその人の名前が付いています。終日予定は日付の右に出ます。</p>
   </section>
   <style>
     .calbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
     .callegend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--ink-2)}
-    .callegend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+    .callegend button{font:inherit;font-size:11.5px;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:3px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+    .callegend button.off{opacity:.4;text-decoration:line-through}
     .callegend i{width:9px;height:9px;border-radius:2px;display:inline-block}
     .calctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-3)}
     .calctl label{display:inline-flex;align-items:center;gap:5px}
@@ -265,12 +266,13 @@ section{margin-top:30px}
     .ctrack .grid{position:absolute;inset:0}
     .ctrack .grid b{position:absolute;top:0;bottom:0;width:1px;background:rgba(17,17,18,.06)}
     .cev{position:absolute;top:2px;bottom:2px;border-radius:2px;color:#fff;font-size:9.5px;line-height:15px;padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .clane.off{opacity:.34}
     .clane.free .ctrack{height:23px;background:#F2F7F3;border:1px solid #DDE9E0}
     .clane.free .clabel{font-weight:700;color:#1C7A4C}
     .cfree{position:absolute;top:2px;bottom:2px;border-radius:2px;background:#1C7A4C;color:#fff;font-size:9.5px;line-height:17px;padding:0 5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:700}
     .cnofree{position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding-left:8px;font-size:9.5px;color:var(--ink-3)}
     .calfoot{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;border-top:1px solid var(--rule-soft);font-size:10.5px;color:var(--ink-3)}
-    @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cday.wknd{background:rgba(255,255,255,.03)}:root:not([data-theme="light"]) .clane.free .ctrack{background:#16241B;border-color:#2A4632}:root:not([data-theme="light"]) .clane.free .clabel{color:#48C88B}}
+    @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cday.wknd{background:rgba(255,255,255,.03)}:root:not([data-theme="light"]) .clane.free .ctrack{background:#16241B;border-color:#2A4632}:root:not([data-theme="light"]) .clane.free .clabel{color:#48C88B}:root:not([data-theme="light"]) .callegend button{background:var(--surface);color:var(--ink-2)}}
     @media (max-width:640px){.calinner{min-width:600px}}
   </style>
   <script>
@@ -292,10 +294,20 @@ section{margin-top:30px}
       var w = ($("calwin").value||"8-22").split("-");
       return { days:+$("caldays").value||7, s:(+w[0])*60, e:(+w[1])*60, min:+$("calmin").value||30 };
     }
+    var off = {};
+    try { off = JSON.parse(localStorage.getItem("bbcaloff")||"{}") || {}; } catch(e){ off = {}; }
+    function saveOff(){ try { localStorage.setItem("bbcaloff", JSON.stringify(off)); } catch(e){} }
     function legend(){
-      $("callegend").innerHTML = cals.map(function(c){
-        return '<span><i style="background:'+esc(c[2])+'"></i>'+esc(c[0])+'</span>';
+      $("callegend").innerHTML = cals.map(function(c,i){
+        return '<button type="button" data-i="'+i+'" class="'+(off[c[0]]?"off":"")+'"><i style="background:'+esc(c[2])+'"></i>'+esc(c[0])+'</button>';
       }).join("");
+      [].forEach.call($("callegend").querySelectorAll("button"), function(b){
+        b.onclick = function(){
+          var nm = cals[+b.getAttribute("data-i")][0];
+          if (off[nm]) delete off[nm]; else off[nm] = 1;
+          saveOff(); legend(); draw();
+        };
+      });
     }
     function merge(list){
       if(!list.length) return [];
@@ -331,6 +343,8 @@ section{margin-top:30px}
         var d = String(e.start).slice(0,10);
         (byDay[d] = byDay[d] || []).push(e);
       });
+      var on = cals.filter(function(x){ return !off[x[0]]; });
+      var flabel = on.length === cals.length ? "全員空き" : (on.length ? (on.length + "人空き") : "空き");
       var t0 = new Date(); t0.setHours(0,0,0,0);
       var html = '<div class="calscroll"><div class="calinner">';
       var totalFree = 0;
@@ -362,33 +376,35 @@ section{margin-top:30px}
             var a = mins(String(e.start).slice(11,16));
             var b = String(e.end).slice(0,10) > k ? c.e : mins(String(e.end).slice(11,16));
             if (String(e.start).slice(0,10) < k) a = c.s;
-            busyAll.push([Math.max(a,c.s), Math.min(b,c.e)]);
+            if (!off[cal[0]]) busyAll.push([Math.max(a,c.s), Math.min(b,c.e)]);
             if (b <= c.s || a >= c.e) return;
             var x = Math.max(a, c.s), y = Math.min(b, c.e);
             var left = (x-c.s)/span*100, w = Math.max((y-x)/span*100, 1.1);
             var txt = w < 5 ? "" : (esc(short(cal[0]))+'・'+esc(e.title||"予定"));
             blocks += '<div class="cev" style="left:'+left+'%;width:'+w+'%;background:'+esc(cal[2])+'" title="'+esc(cal[0])+'／'+esc(e.title||"予定")+' '+hm(a)+'-'+hm(b)+'">'+txt+'</div>';
           });
-          lanes += '<div class="clane"><div class="clabel"><i style="background:'+esc(cal[2])+'"></i>'+esc(cal[0])+'</div><div class="ctrack"><div class="grid">'+gridbars+'</div>'+blocks+'</div></div>';
+          lanes += '<div class="clane'+(off[cal[0]]?" off":"")+'"><div class="clabel"><i style="background:'+esc(cal[2])+'"></i>'+esc(cal[0])+'</div><div class="ctrack"><div class="grid">'+gridbars+'</div>'+blocks+'</div></div>';
         });
-        var free = gaps(merge(busyAll.filter(function(b){ return b[1] > b[0]; })), c.s, c.e, c.min);
+        var free = on.length ? gaps(merge(busyAll.filter(function(b){ return b[1] > b[0]; })), c.s, c.e, c.min) : [];
         var fb = '';
-        if (free.length){
+        if (!on.length){
+          fb = '<div class="cnofree">名前を1人以上えらんでください</div>';
+        } else if (free.length){
           free.forEach(function(f){
             totalFree += (f[1]-f[0]);
             var left = (f[0]-c.s)/span*100, w = (f[1]-f[0])/span*100;
             var ftxt = w < 6 ? "" : (hm(f[0])+'-'+hm(f[1]));
-            fb += '<div class="cfree" style="left:'+left+'%;width:'+w+'%" title="全員空き '+hm(f[0])+'-'+hm(f[1])+'">'+ftxt+'</div>';
+            fb += '<div class="cfree" style="left:'+left+'%;width:'+w+'%" title="'+flabel+' '+hm(f[0])+'-'+hm(f[1])+'">'+ftxt+'</div>';
           });
         } else {
           fb = '<div class="cnofree">この日はまとまった空きなし</div>';
         }
-        html += '<div class="clane free"><div class="clabel">全員空き</div><div class="ctrack"><div class="grid">'+gridbars+'</div>'+fb+'</div></div>';
+        html += '<div class="clane free"><div class="clabel">'+flabel+'</div><div class="ctrack"><div class="grid">'+gridbars+'</div>'+fb+'</div></div>';
         html += lanes;
         html += '<div style="height:7px"></div></div>';
       }
       html += '</div></div>';
-      html += '<div class="calfoot"><span>全員空き 合計 '+Math.round(totalFree/60*10)/10+' 時間 ／ '+c.days+'日間</span><span>'+(stamp?("最終更新 "+new Date(stamp).toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})):"")+'</span></div>';
+      html += '<div class="calfoot"><span>'+flabel+' 合計 '+Math.round(totalFree/60*10)/10+' 時間 ／ '+c.days+'日間</span><span>'+(stamp?("最終更新 "+new Date(stamp).toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})):"")+'</span></div>';
       wrap.innerHTML = html;
     }
     function load(){
@@ -420,6 +436,7 @@ section{margin-top:30px}
     setInterval(function(){ if (!document.hidden) load(); }, 600000);
   })();
   </script>
+
 
 
   <section><div class="head"><h2>KGI</h2><span class="sub">VOL.03 のゴール</span></div>
