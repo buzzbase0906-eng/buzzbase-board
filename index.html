@@ -196,9 +196,9 @@ section{margin-top:30px}
 .ro .ed{cursor:default}
 .ro .ed:hover{background:none;box-shadow:none}
 .pill.ro{cursor:default}
-.ownbtn{font:inherit;font-size:inherit;color:inherit;letter-spacing:inherit;background:transparent;border:1px dashed var(--rule);border-radius:3px;padding:1px 7px;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ownbtn:hover{border-style:solid;background:var(--surface-2)}
-.ownbtn:empty::after{content:"未定";color:var(--ink-3)}
+.ownsel{font:inherit;font-size:inherit;color:inherit;letter-spacing:inherit;background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:2px 4px;cursor:pointer;max-width:100%}
+.ownsel:hover{background:var(--surface-2)}
+.ownsel:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -449,7 +449,7 @@ section{margin-top:30px}
     <div class="tbl" id="kpis"></div></section>
 
   <section>
-    <div class="head"><h2>TASKS</h2><span class="sub">担当・状態はタップで切り替え（状態：未着手 → 進行中 → 完了 → 保留）</span>
+    <div class="head"><h2>TASKS</h2><span class="sub">担当はプルダウンで変更／状態を押すと 未着手 → 進行中 → 完了 → 保留</span>
       <span class="act" style="display:flex;gap:8px;align-items:center">
         <label style="font-size:11.5px;color:var(--ink-2)">自分は <select id="meSel" style="font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)"></select></label>
         <button class="btn" id="reload">↻ 更新</button>
@@ -538,7 +538,7 @@ function renderTasks(){
       var due = normDue(t.due);
       html += '<div class="row task-row'+(st==="完了"?" done-row":"")+'">'
         +'<span class="cell">'+esc(t.title)+'</span>'
-        +'<span class="cell c-own"><button class="ownbtn" data-own="'+esc(t.id)+'" title="押すと担当が次の人へ">'+esc(t.owner||"未定")+'</button></span>'
+        +'<span class="cell c-own"><select class="ownsel" data-own="'+esc(t.id)+'" title="担当を選ぶ">'+ownOpts(t.owner)+'</select></span>'
         +'<span class="cell mono due '+dueCls(due,st)+'">'+esc(due||"—")+'</span>'
         +'<span class="cell"><button class="pill '+CLS[st]+'" data-id="'+esc(t.id)+'" title="押すと次の状態へ">'+esc(st)+'</button></span>'
         +'<span class="cell"></span></div>';
@@ -565,20 +565,22 @@ function send(body){
       tasks=j.tasks; err=null; renderTasks(); say("保存しました "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
    }).catch(function(e){ busy=false; say("保存できませんでした。もう一度お試しください。"); });
 }
+function ownOpts(cur){
+  var pool = ["未定"].concat(CREW);
+  var c = cur || "未定";
+  if(pool.indexOf(c) < 0) pool.push(c);
+  return pool.map(function(n){ return '<option value="'+esc(n==="未定"?"":n)+'"'+(n===c?" selected":"")+'>'+esc(n)+'</option>'; }).join("");
+}
+document.addEventListener("change", function(ev){
+  var s = ev.target.closest && ev.target.closest(".ownsel");
+  if(!s) return;
+  var t = tasks.filter(function(x){ return String(x.id)===s.dataset.own; })[0];
+  if(!t) return;
+  t.owner = s.value; renderTasks();
+  send({action:"owner", id:t.id, owner:t.owner, by:me});
+});
 document.addEventListener("click", function(ev){
-  var o = ev.target.closest && ev.target.closest("[data-own]");
-    if(o){
-      var ot = tasks.filter(function(x){ return String(x.id)===o.dataset.own; })[0];
-      if(ot){
-        var pool = ["未定"].concat(CREW);
-        var cur = ot.owner || "未定";
-        if(pool.indexOf(cur) < 0) pool.push(cur);
-        var nx = pool[(pool.indexOf(cur)+1)%pool.length];
-        ot.owner = (nx==="未定" ? "" : nx); renderTasks();
-        send({action:"owner", id:ot.id, owner:ot.owner, by:me});
-      }
-      return;
-    }
+  if(ev.target.closest && ev.target.closest(".ownsel")) return;
     var b = ev.target.closest && ev.target.closest("[data-id]");
   if(!b) return;
   var t = tasks.filter(function(x){ return String(x.id)===b.dataset.id; })[0];
