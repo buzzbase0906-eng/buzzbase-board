@@ -217,13 +217,210 @@ section{margin-top:30px}
     残り日数だけは開いた日で自動計算されます。
   </p>
 
-  <section>
-    <div class="head"><h2>SCHEDULE</h2><span class="sub">クルー6人の予定（Googleカレンダー直結・常に最新／予定名は非表示）</span></div>
-    <div class="tbl" style="padding:0;overflow:hidden">
-      <iframe title="BUZZ BASE クルーの予定" src="https://calendar.google.com/calendar/embed?ctz=Asia%2FTokyo&mode=WEEK&wkst=1&showTitle=0&showPrint=0&showTz=0&showCalendars=1&showTabs=1&bgcolor=%23ffffff&src=koki04140426%40gmail.com&color=%2312794C&src=shgtres5%40gmail.com&color=%23C2620E&src=livery0n0512%40gmail.com&color=%231E56C8&src=shokei.260701%40gmail.com&color=%236E3FBF&src=yukiebi1221%40gmail.com&color=%23C0304A&src=shori.524.shori%40gmail.com&color=%230E7490" style="border:0;width:100%;height:620px;display:block"></iframe>
+  <section id="schedule">
+    <div class="head"><h2>SCHEDULE</h2><span class="sub">クルー6人の予定＋全員の空き時間（Googleカレンダー直結・自動更新）</span></div>
+    <div class="calbar">
+      <div class="callegend" id="callegend"></div>
+      <div class="calctl">
+        <label>期間<select id="caldays"><option value="7">7日</option><option value="14">14日</option><option value="3">3日</option></select></label>
+        <label>時間帯<select id="calwin"><option value="8-22">8:00-22:00</option><option value="6-24">6:00-24:00</option><option value="9-19">9:00-19:00</option></select></label>
+        <label>空き<select id="calmin"><option value="30">30分以上</option><option value="60">1時間以上</option><option value="120">2時間以上</option></select></label>
+        <button class="calbtn" id="calrefresh" type="button">更新</button>
+      </div>
     </div>
-    <p class="foot" style="margin-top:10px;border:0;padding:0">カレンダーを「一般公開（時間枠のみ、詳細は非表示）」にした人だけがここに出ます。表示されない人は各自の設定をお願いします。</p>
+    <div class="tbl" id="calwrap"><div class="calmsg">カレンダーを読み込み中…</div></div>
+    <p class="foot" style="margin-top:10px;border:0;padding:0">緑の帯＝クルー6人全員が予定なしの時間（選択した時間帯・最短時間以上）。予定名の前にその人の名前が付いています。終日予定は日付の右に出ます。</p>
   </section>
+  <style>
+    .calbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .callegend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--ink-2)}
+    .callegend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+    .callegend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+    .calctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-3)}
+    .calctl label{display:inline-flex;align-items:center;gap:5px}
+    .calctl select{font:inherit;font-size:11.5px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:3px 5px}
+    .calbtn{font:inherit;font-size:11.5px;cursor:pointer;background:var(--ink);color:#fff;border:0;border-radius:3px;padding:5px 12px;letter-spacing:.04em}
+    .calbtn:disabled{opacity:.45;cursor:default}
+    .calmsg{padding:22px 16px;font-size:12px;color:var(--ink-3)}
+    .calmsg.bad{color:var(--st-late)}
+    .calscroll{overflow-x:auto}
+    .calinner{min-width:640px}
+    .cday{border-top:1px solid var(--rule-soft)}
+    .cday:first-child{border-top:0}
+    .cday.wknd{background:#FCFBF9}
+    .cdhead{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 12px 6px}
+    .cdate{font-size:13px;font-weight:700;letter-spacing:.02em}
+    .cdow{font-size:11px;color:var(--ink-3)}
+    .cday.sat .cdow{color:#1E56C8}
+    .cday.sun .cdow{color:var(--accent)}
+    .cdtoday{font-size:9.5px;letter-spacing:.1em;background:var(--accent);color:var(--on-accent);border-radius:2px;padding:2px 6px}
+    .cdall{font-size:10.5px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:4px}
+    .cdall em{font-style:normal;border:1px solid var(--rule);border-radius:2px;padding:1px 6px;background:var(--surface)}
+    .cruler{display:flex;padding:0 12px 2px;margin-left:84px}
+    .ctick{flex:1 1 0;font-size:9.5px;color:var(--ink-3);border-left:1px solid var(--rule-soft);padding-left:3px}
+    .clane{display:flex;align-items:center;gap:0;padding:1px 12px}
+    .clabel{width:84px;flex:0 0 84px;font-size:10.5px;color:var(--ink-2);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden}
+    .clabel i{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
+    .ctrack{position:relative;flex:1 1 auto;height:19px;background:var(--surface-2);border-radius:2px;overflow:hidden}
+    .ctrack .grid{position:absolute;inset:0}
+    .ctrack .grid b{position:absolute;top:0;bottom:0;width:1px;background:rgba(17,17,18,.06)}
+    .cev{position:absolute;top:2px;bottom:2px;border-radius:2px;color:#fff;font-size:9.5px;line-height:15px;padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .clane.free .ctrack{height:23px;background:#F2F7F3;border:1px solid #DDE9E0}
+    .clane.free .clabel{font-weight:700;color:#1C7A4C}
+    .cfree{position:absolute;top:2px;bottom:2px;border-radius:2px;background:#1C7A4C;color:#fff;font-size:9.5px;line-height:17px;padding:0 5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:700}
+    .cnofree{position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding-left:8px;font-size:9.5px;color:var(--ink-3)}
+    .calfoot{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;border-top:1px solid var(--rule-soft);font-size:10.5px;color:var(--ink-3)}
+    @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cday.wknd{background:rgba(255,255,255,.03)}:root:not([data-theme="light"]) .clane.free .ctrack{background:#16241B;border-color:#2A4632}:root:not([data-theme="light"]) .clane.free .clabel{color:#48C88B}}
+    @media (max-width:640px){.calinner{min-width:600px}}
+  </style>
+  <script>
+  (function(){
+    var API = "https://script.google.com/macros/s/AKfycbywFqJK40l0XP6cfN-8R_Pyxifx4uP67k0Dn5l5XBxsIosHy1x25z7_XX8Oxztm7uhFbw/exec";
+    var FALLCAL = [["新見康樹","koki04140426@gmail.com","#12794C"],["岩田紹吾","shgtres5@gmail.com","#C2620E"],["達城椋","livery0n0512@gmail.com","#1E56C8"],["乾颯汰","shokei.260701@gmail.com","#6E3FBF"],["海老澤悠希","yukiebi1221@gmail.com","#C0304A"],["小西将理","shori.524.shori@gmail.com","#0E7490"]];
+    var SKIP = /誕生日|HPB|バースデー|birthday/i;
+    var DOW = ["日","月","火","水","木","金","土"];
+    var cals = FALLCAL, evs = null, loading = false, lastErr = "", stamp = 0;
+    var $ = function(id){ return document.getElementById(id); };
+    var esc = function(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); };
+    var n2 = function(n){ return String(n).padStart(2,"0"); };
+    var SHORT = {"新見康樹":"新見","岩田紹吾":"岩田","達城椋":"達城","乾颯汰":"乾","海老澤悠希":"海老澤","小西将理":"小西"};
+    function short(n){ n = String(n||""); return SHORT[n] || (n.indexOf(" ")>0 ? n.split(" ")[0] : (n.length>3 ? n.slice(0,2) : n)); }
+    function dkey(d){ return d.getFullYear()+"-"+n2(d.getMonth()+1)+"-"+n2(d.getDate()); }
+    function mins(hhmm){ var p = String(hhmm).split(":"); return (+p[0])*60 + (+p[1]); }
+    function hm(m){ return Math.floor(m/60)+":"+n2(m%60); }
+    function cfg(){
+      var w = ($("calwin").value||"8-22").split("-");
+      return { days:+$("caldays").value||7, s:(+w[0])*60, e:(+w[1])*60, min:+$("calmin").value||30 };
+    }
+    function legend(){
+      $("callegend").innerHTML = cals.map(function(c){
+        return '<span><i style="background:'+esc(c[2])+'"></i>'+esc(c[0])+'</span>';
+      }).join("");
+    }
+    function merge(list){
+      if(!list.length) return [];
+      list.sort(function(a,b){ return a[0]-b[0]; });
+      var out = [list[0].slice()];
+      for (var i=1;i<list.length;i++){
+        var cur = out[out.length-1];
+        if (list[i][0] <= cur[1]) { if (list[i][1] > cur[1]) cur[1] = list[i][1]; }
+        else out.push(list[i].slice());
+      }
+      return out;
+    }
+    function gaps(busy, s, e, min){
+      var out = [], p = s;
+      for (var i=0;i<busy.length;i++){
+        var b = busy[i];
+        if (b[0] > p && b[0]-p >= min) out.push([p, b[0]]);
+        if (b[1] > p) p = b[1];
+      }
+      if (e - p >= min) out.push([p, e]);
+      return out;
+    }
+    function draw(){
+      var wrap = $("calwrap");
+      if (evs === null){
+        wrap.innerHTML = '<div class="calmsg'+(lastErr?' bad':'')+'">'+esc(lastErr || "カレンダーを読み込み中…")+'</div>';
+        return;
+      }
+      var c = cfg(), span = c.e - c.s;
+      var byDay = {};
+      evs.forEach(function(e){
+        if (SKIP.test(e.title||"")) return;
+        var d = String(e.start).slice(0,10);
+        (byDay[d] = byDay[d] || []).push(e);
+      });
+      var t0 = new Date(); t0.setHours(0,0,0,0);
+      var html = '<div class="calscroll"><div class="calinner">';
+      var totalFree = 0;
+      for (var i=0;i<c.days;i++){
+        var d = new Date(t0.getTime() + i*86400000), k = dkey(d), dw = d.getDay();
+        var list = (byDay[k]||[]);
+        var allday = list.filter(function(e){ return e.allDay; });
+        var timed = list.filter(function(e){ return !e.allDay; });
+        html += '<div class="cday'+(dw===0?' sun':'')+(dw===6?' sat':'')+((dw===0||dw===6)?' wknd':'')+'">';
+        html += '<div class="cdhead"><span class="cdate">'+(d.getMonth()+1)+'/'+d.getDate()+'</span><span class="cdow">('+DOW[dw]+')</span>';
+        if (i===0) html += '<span class="cdtoday">TODAY</span>';
+        if (allday.length){
+          html += '<span class="cdall">'+allday.map(function(e){
+            return '<em><b style="color:'+esc(e.color)+'">'+esc(e.who)+'</b>／'+esc(e.title||"予定")+'</em>';
+          }).join("")+'</span>';
+        }
+        html += '</div>';
+        var ticks = '';
+        for (var h=c.s/60; h<c.e/60; h+=2) ticks += '<span class="ctick">'+h+'</span>';
+        html += '<div class="cruler">'+ticks+'</div>';
+        var gridbars = '';
+        for (var g=1; g<(c.e-c.s)/60; g++) gridbars += '<b style="left:'+((g*60)/span*100)+'%"></b>';
+        var busyAll = [];
+        var lanes = '';
+        cals.forEach(function(cal){
+          var mine = timed.filter(function(e){ return e.who === cal[0]; });
+          var blocks = '';
+          mine.forEach(function(e){
+            var a = mins(String(e.start).slice(11,16));
+            var b = String(e.end).slice(0,10) > k ? c.e : mins(String(e.end).slice(11,16));
+            if (String(e.start).slice(0,10) < k) a = c.s;
+            busyAll.push([Math.max(a,c.s), Math.min(b,c.e)]);
+            if (b <= c.s || a >= c.e) return;
+            var x = Math.max(a, c.s), y = Math.min(b, c.e);
+            var left = (x-c.s)/span*100, w = Math.max((y-x)/span*100, 1.1);
+            var txt = w < 5 ? "" : (esc(short(cal[0]))+'・'+esc(e.title||"予定"));
+            blocks += '<div class="cev" style="left:'+left+'%;width:'+w+'%;background:'+esc(cal[2])+'" title="'+esc(cal[0])+'／'+esc(e.title||"予定")+' '+hm(a)+'-'+hm(b)+'">'+txt+'</div>';
+          });
+          lanes += '<div class="clane"><div class="clabel"><i style="background:'+esc(cal[2])+'"></i>'+esc(cal[0])+'</div><div class="ctrack"><div class="grid">'+gridbars+'</div>'+blocks+'</div></div>';
+        });
+        var free = gaps(merge(busyAll.filter(function(b){ return b[1] > b[0]; })), c.s, c.e, c.min);
+        var fb = '';
+        if (free.length){
+          free.forEach(function(f){
+            totalFree += (f[1]-f[0]);
+            var left = (f[0]-c.s)/span*100, w = (f[1]-f[0])/span*100;
+            var ftxt = w < 6 ? "" : (hm(f[0])+'-'+hm(f[1]));
+            fb += '<div class="cfree" style="left:'+left+'%;width:'+w+'%" title="全員空き '+hm(f[0])+'-'+hm(f[1])+'">'+ftxt+'</div>';
+          });
+        } else {
+          fb = '<div class="cnofree">この日はまとまった空きなし</div>';
+        }
+        html += '<div class="clane free"><div class="clabel">全員空き</div><div class="ctrack"><div class="grid">'+gridbars+'</div>'+fb+'</div></div>';
+        html += lanes;
+        html += '<div style="height:7px"></div></div>';
+      }
+      html += '</div></div>';
+      html += '<div class="calfoot"><span>全員空き 合計 '+Math.round(totalFree/60*10)/10+' 時間 ／ '+c.days+'日間</span><span>'+(stamp?("最終更新 "+new Date(stamp).toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})):"")+'</span></div>';
+      wrap.innerHTML = html;
+    }
+    function load(){
+      if (loading) return;
+      loading = true; lastErr = ""; $("calrefresh").disabled = true;
+      if (evs === null) draw();
+      var days = cfg().days;
+      fetch(API + "?what=cal&days=" + days + "&t=" + Date.now())
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          if (!j || !j.ok) throw new Error((j && j.error) || "unknown");
+          if (j.cals && j.cals.length) cals = j.cals;
+          evs = j.events || [];
+          stamp = Date.now();
+          legend(); draw();
+        })
+        .catch(function(err){
+          lastErr = "カレンダーを読み込めませんでした（" + String(err && err.message || err) + "）。「更新」を押してください。";
+          if (evs === null) draw(); else draw();
+        })
+        .then(function(){ loading = false; $("calrefresh").disabled = false; });
+    }
+    $("calrefresh").onclick = load;
+    $("caldays").onchange = load;
+    $("calwin").onchange = draw;
+    $("calmin").onchange = draw;
+    legend();
+    load();
+    setInterval(function(){ if (!document.hidden) load(); }, 600000);
+  })();
+  </script>
+
 
   <section><div class="head"><h2>KGI</h2><span class="sub">VOL.03 のゴール</span></div>
     <div class="kgis" id="kgis"></div></section>
