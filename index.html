@@ -276,6 +276,18 @@ section{margin-top:30px}
     .cnofree{position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding-left:8px;font-size:9.5px;color:var(--ink-3)}
     .calfoot{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;border-top:1px solid var(--rule-soft);font-size:10.5px;color:var(--ink-3)}
     @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cday.wknd{background:rgba(255,255,255,.03)}:root:not([data-theme="light"]) .clane.free .ctrack{background:#16241B;border-color:#2A4632}:root:not([data-theme="light"]) .clane.free .clabel{color:#48C88B}:root:not([data-theme="light"]) .callegend button{background:var(--surface);color:var(--ink-2)}}
+    .cev{cursor:pointer}
+    .cev:hover{filter:brightness(1.12)}
+    .evmask{position:fixed;inset:0;background:rgba(17,17,18,.42);display:flex;align-items:center;justify-content:center;padding:18px;z-index:90}
+    .evcard{background:var(--surface);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);max-width:400px;width:100%;padding:18px 18px 14px}
+    .evwho{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);margin-bottom:8px}
+    .evwho i{width:10px;height:10px;border-radius:2px}
+    .evttl{font-size:16px;font-weight:700;line-height:1.45;margin:0 0 12px;color:var(--ink)}
+    .evrow{display:flex;gap:10px;font-size:12px;color:var(--ink-2);padding:6px 0;border-top:1px solid var(--rule-soft);line-height:1.6}
+    .evrow b{flex:0 0 46px;font-weight:400;color:var(--ink-3)}
+    .evfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
+    .evlink{font-size:11.5px;color:var(--ink-2)}
+    .evclose{font:inherit;font-size:11.5px;background:var(--ink);color:var(--paper);border:0;border-radius:3px;padding:7px 16px;cursor:pointer}
     @media (max-width:640px){.calinner{min-width:600px}}
   </style>
   <script>
@@ -384,7 +396,7 @@ section{margin-top:30px}
             var x = Math.max(a, c.s), y = Math.min(b, c.e);
             var left = (x-c.s)/span*100, w = Math.max((y-x)/span*100, 1.1);
             var txt = w < 5 ? "" : (esc(short(cal[0]))+'・'+esc(e.title||"予定"));
-            blocks += '<div class="cev" style="left:'+left+'%;width:'+w+'%;background:'+esc(cal[2])+'" title="'+esc(cal[0])+'／'+esc(e.title||"予定")+' '+hm(a)+'-'+hm(b)+'">'+txt+'</div>';
+            blocks += '<div class="cev" data-ev="'+e._i+'" style="left:'+left+'%;width:'+w+'%;background:'+esc(cal[2])+'" title="'+esc(cal[0])+'／'+esc(e.title||"予定")+' '+hm(a)+'-'+hm(b)+'">'+txt+'</div>';
           });
           lanes += '<div class="clane'+(off[cal[0]]?" off":"")+'"><div class="clabel"><i style="background:'+esc(cal[2])+'"></i>'+esc(cal[0])+'</div><div class="ctrack"><div class="grid">'+gridbars+'</div>'+blocks+'</div></div>';
         });
@@ -420,7 +432,7 @@ section{margin-top:30px}
         .then(function(j){
           if (!j || !j.ok) throw new Error((j && j.error) || "unknown");
           if (j.cals && j.cals.length) cals = j.cals;
-          evs = j.events || [];
+          evs = j.events || []; evs.forEach(function(x,ix){ x._i = ix; });
           stamp = Date.now();
           legend(); draw();
         })
@@ -430,6 +442,37 @@ section{margin-top:30px}
         })
         .then(function(){ loading = false; $("calrefresh").disabled = false; });
     }
+    function evDetail(ix){
+      var e = evs && evs[ix]; if(!e) return;
+      var cc = cals.filter(function(x){ return x[0]===e.who; })[0] || ["","","#8C8C92"];
+      var sd = String(e.start).slice(0,10), st = String(e.start).slice(11,16);
+      var ed = String(e.end).slice(0,10), et = String(e.end).slice(11,16);
+      var dd = new Date(sd+"T00:00:00");
+      var when = e.allDay ? (sd + "（" + DOW[dd.getDay()] + "） 終日")
+        : (sd + "（" + DOW[dd.getDay()] + "） " + st + " - " + (ed===sd ? et : (ed + " " + et)));
+      var mn = e.allDay ? 0 : (mins(et) + (ed===sd?0:1440)) - mins(st);
+      var dur = mn ? ((Math.floor(mn/60)?Math.floor(mn/60)+"時間":"") + (mn%60?(mn%60)+"分":"")) : "";
+      var link = "https://calendar.google.com/calendar/r/day/" + sd.slice(0,4) + "/" + (+sd.slice(5,7)) + "/" + (+sd.slice(8,10));
+      var h = '<div class="evmask" id="evmask"><div class="evcard" role="dialog">'
+        + '<div class="evwho"><i style="background:'+esc(cc[2])+'"></i>'+esc(e.who)+' の予定</div>'
+        + '<p class="evttl">'+esc(e.title||"予定")+'</p>'
+        + '<div class="evrow"><b>日時</b><span>'+esc(when)+'</span></div>'
+        + (dur ? '<div class="evrow"><b>長さ</b><span>'+esc(dur)+'</span></div>' : "")
+        + (e.loc ? '<div class="evrow"><b>場所</b><span>'+esc(e.loc)+'</span></div>' : "")
+        + '<div class="evfoot"><a class="evlink" href="'+link+'" target="_blank" rel="noopener">Googleカレンダーで開く</a>'
+        + '<button class="evclose" type="button" id="evclose">閉じる</button></div>'
+        + '</div></div>';
+      var host = document.createElement("div"); host.innerHTML = h;
+      document.body.appendChild(host.firstChild);
+      var mask = document.getElementById("evmask");
+      mask.onclick = function(e2){ if(e2.target === mask || e2.target.id === "evclose") mask.remove(); };
+      document.addEventListener("keydown", function ek(e3){ if(e3.key === "Escape"){ var mm = document.getElementById("evmask"); if(mm) mm.remove(); document.removeEventListener("keydown", ek); } });
+    }
+    $("calwrap").addEventListener("click", function(e4){
+      var el = e4.target.closest && e4.target.closest("[data-ev]");
+      if(!el) return;
+      evDetail(+el.getAttribute("data-ev"));
+    });
     $("calrefresh").onclick = load;
     $("caldays").onchange = load;
     $("calwin").onchange = draw;
